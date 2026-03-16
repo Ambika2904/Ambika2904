@@ -1,43 +1,94 @@
-<h1 align="center">Hi 👋, I'm Ambika Tiwari</h1>
-<h3 align="center">I am a student doing Data science and Economic double major.</h3>
+# ZARVEN — Level 2: Mass Matters
+### Gamified Periodic Table Learning Platform
 
-- 🔭 I’m currently working on **Kalman Filtter.**
+A browser-based educational snake game for learning the periodic table.
+Built as part of the ZARVEN independent study project.
 
-- 🌱 I’m currently learning **more of data science**
+---
 
-- 👯 I’m looking to collaborate on [card game project](https://youtu.be/XNrhof22nOc?si=X997tXfqv39rJDJf)
+## How to Host on GitHub Pages (Free Shareable Link)
 
-- 🤝 I’m looking for help with **guide me for future exposure.**
+### Step 1 — Create a GitHub Account
+- Go to https://github.com and sign up (free)
 
-- 📝 I regularly write articles on [Card game https://youtu.be/XNrhof22nOc?si=X997tXfqv39rJDJf](Card game https://youtu.be/XNrhof22nOc?si=X997tXfqv39rJDJf)
+### Step 2 — Create a New Repository
+1. Click the **+** button (top right) → **New repository**
+2. Repository name: `zarven-game` (or any name you like)
+3. Set to **Public**
+4. Click **Create repository**
 
-- 💬 Ask me about **my experience with slum upliftment and about card game project.**
+### Step 3 — Upload the Files
+1. In your new repository, click **Add file → Upload files**
+2. Upload ALL four files:
+   - `index.html`
+   - `style.css`
+   - `elements.js`
+   - `game.js`
+3. Click **Commit changes**
 
-- 📫 How to reach me **ambika_tiwari.sias23@krea.ac.in**
+### Step 4 — Enable GitHub Pages
+1. Go to your repository **Settings** tab
+2. Scroll down to **Pages** (in the left sidebar)
+3. Under **Source**, select **Deploy from a branch**
+4. Branch: select `main`, folder: `/ (root)`
+5. Click **Save**
 
-- 📄 Know about my experiences [https://in.docworkspace.com/d/sII7d9PHaAe6i1cEG](https://in.docworkspace.com/d/sII7d9PHaAe6i1cEG)
+### Step 5 — Get Your Shareable Link
+- Wait about 1–2 minutes
+- Your game will be live at:
+  `https://YOUR-USERNAME.github.io/zarven-game/`
+- Share this link with anyone — no login needed to play!
 
-- ⚡ Fun fact **I love talking**
+---
 
-<h3 align="left">Connect with me:</h3>
-<p align="left">
-</p>
+## Game Features
 
-<h3 align="left">Languages and Tools:</h3>
-<p align="left"> <a href="https://developer.android.com" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/android/android-original-wordmark.svg" alt="android" width="40" height="40"/> </a> <a href="https://canvasjs.com" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/Hardik0307/Hardik0307/master/assets/canvasjs-charts.svg" alt="canvasjs" width="40" height="40"/> </a> <a href="https://git-scm.com/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/git-scm/git-scm-icon.svg" alt="git" width="40" height="40"/> </a> <a href="https://www.w3.org/html/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original-wordmark.svg" alt="html5" width="40" height="40"/> </a> <a href="https://www.linux.org/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/linux/linux-original.svg" alt="linux" width="40" height="40"/> </a> <a href="https://www.mathworks.com/" target="_blank" rel="noreferrer"> <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Matlab_Logo.png" alt="matlab" width="40" height="40"/> </a> <a href="https://pandas.pydata.org/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/2ae2a900d2f041da66e950e4d48052658d850630/icons/pandas/pandas-original.svg" alt="pandas" width="40" height="40"/> </a> <a href="https://www.photoshop.com/en" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/photoshop/photoshop-line.svg" alt="photoshop" width="40" height="40"/> </a> <a href="https://www.python.org" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" alt="python" width="40" height="40"/> </a> <a href="https://scikit-learn.org/" target="_blank" rel="noreferrer"> <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Scikit_learn_logo_small.svg" alt="scikit_learn" width="40" height="40"/> </a> <a href="https://seaborn.pydata.org/" target="_blank" rel="noreferrer"> <img src="https://seaborn.pydata.org/_images/logo-mark-lightbg.svg" alt="seaborn" width="40" height="40"/> </a> </p>
+### Two Modes
+| Mode | Player 1 | Player 2 |
+|------|----------|----------|
+| Human vs Robot | W A S D keys | Robot AI (automatic) |
+| Human vs Human | W A S D keys | Arrow keys |
 
+### Element Ranges
+- **Z 1–10** — Hydrogen to Neon (beginner)
+- **Z 11–20** — Sodium to Calcium (intermediate)
+- **Z 1–20** — All 20 elements (full range)
 
-<!--
-**Ambika2904/Ambika2904** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+### How to Score
+- **Eat elements** → grow snake + score atomic mass points
+- **Heavier element** = bigger circle on screen = more points + more growth
+- **Noble gases** (dashed circle) → eating one freezes your snake for 2 seconds
+- **90-second timer** — most points wins!
+- **3 lives** each — respawn on wall/self collision
 
-Here are some ideas to get you started:
+### Real-World Examples
+Every element eaten shows its real-world use (e.g. Carbon → "Diamonds, life itself").
+This is the core educational mechanic from the ZARVEN platform design.
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+---
+
+## File Structure
+
+```
+zarven-game/
+├── index.html     ← Page structure and screens (menu, game, results)
+├── style.css      ← All visual styling (dark sci-fi theme)
+├── elements.js    ← Periodic table data (Z1–20) with examples
+└── game.js        ← All game logic: snake movement, robot AI, drawing
+```
+
+---
+
+## Academic Context
+
+This prototype implements **Level 2: Mass Matters** of the ZARVEN gamified
+learning platform, as described in the Week 7 design specification:
+
+- Single player and 2-player modes
+- Element range selection (prerequisite progression)
+- Heavy elements score more (atomic mass mechanic)
+- Noble gas penalty mechanic
+- Real-world element examples (educational HUD)
+
+Built for: Independent Study — Designing a Data-Driven Gamified Digital
+Platform to Improve Conceptual Understanding of the Periodic Table.

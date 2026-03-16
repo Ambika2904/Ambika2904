@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZARVEN — Level 2: Mass Matters</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap');
+
+  :root {
+    --bg: #050a12;
+    --panel: #0b1524;
+    --border: #1a3a5c;
+    --accent1: #00d4ff;
+    --accent2: #ff6b35;
+    --accent3: #39ff14;
+    --noble: #c0c0c0;
+    --p1: #00d4ff;
+    --p2: #ff6b35;
+    --text: #cde6ff;
+    --dim: #4a7a9b;
+    --glow1: 0 0 12px #00d4ff88;
+    --glow2: 0 0 12px #ff6b3588;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Exo 2', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 20%, #00d4ff0d 0%, transparent 60%),
+      radial-gradient(ellipse 40% 50% at 80% 80%, #ff6b350a 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    width: 100%; padding: 16px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: #070e1b;
+    position: relative; z-index: 2;
+  }
+  .logo {
+    font-family: 'Orbitron', monospace;
+    font-weight: 900; font-size: 1.5rem;
+    color: var(--accent1);
+    text-shadow: var(--glow1);
+    letter-spacing: 4px;
+  }
+  .logo span { color: var(--accent2); }
+  .subtitle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem; color: var(--dim);
+    letter-spacing: 2px;
+  }
+
+  /* ─── SCREENS ─── */
+  .screen {
+    display: none; flex-direction: column; align-items: center; justify-content: center;
+    min-height: calc(100vh - 65px);
+    width: 100%; padding: 32px;
+    position: relative; z-index: 1;
+  }
+  .screen.active { display: flex; }
+
+  /* ─── MENU SCREEN ─── */
+  .menu-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 2.8rem; font-weight: 900;
+    text-align: center; margin-bottom: 8px;
+    background: linear-gradient(135deg, var(--accent1), #7b9fff);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    text-shadow: none;
+  }
+  .level-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.9rem; color: var(--accent2);
+    letter-spacing: 3px; margin-bottom: 48px;
+  }
+
+  .mode-cards {
+    display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;
+    margin-bottom: 48px;
+  }
+  .mode-card {
+    background: var(--panel);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 32px 40px;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-align: center;
+    min-width: 220px;
+  }
+  .mode-card:hover, .mode-card.selected {
+    border-color: var(--accent1);
+    box-shadow: 0 0 24px #00d4ff33, inset 0 0 16px #00d4ff08;
+    transform: translateY(-4px);
+  }
+  .mode-card .icon { font-size: 3rem; margin-bottom: 12px; }
+  .mode-card h3 {
+    font-family: 'Orbitron', monospace; font-size: 1rem;
+    color: var(--accent1); letter-spacing: 2px; margin-bottom: 8px;
+  }
+  .mode-card p { font-size: 0.8rem; color: var(--dim); line-height: 1.5; }
+
+  .range-section { margin-bottom: 32px; text-align: center; }
+  .range-section h4 {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--dim); letter-spacing: 2px; margin-bottom: 16px; font-size: 0.8rem;
+  }
+  .range-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .range-btn {
+    background: var(--panel); border: 1px solid var(--border);
+    color: var(--text); padding: 10px 20px; border-radius: 8px;
+    cursor: pointer; font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem; transition: all 0.2s;
+  }
+  .range-btn:hover, .range-btn.selected {
+    border-color: var(--accent1); color: var(--accent1);
+    background: #00d4ff11;
+  }
+
+  .btn-primary {
+    font-family: 'Orbitron', monospace; font-weight: 700;
+    font-size: 1rem; letter-spacing: 3px;
+    padding: 16px 48px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent1), #0070ff);
+    color: var(--bg); border: none; cursor: pointer;
+    transition: all 0.2s; text-transform: uppercase;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px #00d4ff44;
+  }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* ─── GAME SCREEN ─── */
+  #gameScreen { padding: 16px; flex-direction: column; }
+
+  .game-header {
+    display: flex; align-items: center; justify-content: space-between;
+    width: 100%; max-width: 960px; margin-bottom: 12px;
+  }
+
+  .scoreboard {
+    display: flex; gap: 24px;
+  }
+  .score-box {
+    background: var(--panel); border-radius: 10px;
+    padding: 8px 20px; border: 1px solid var(--border);
+    text-align: center; min-width: 120px;
+  }
+  .score-box .player-name {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+  .score-box.p1 .player-name { color: var(--p1); }
+  .score-box.p2 .player-name { color: var(--p2); }
+  .score-box .score-val {
+    font-family: 'Orbitron', monospace; font-weight: 700; font-size: 1.4rem;
+  }
+  .score-box.p1 .score-val { color: var(--p1); text-shadow: var(--glow1); }
+  .score-box.p2 .score-val { color: var(--p2); text-shadow: var(--glow2); }
+
+  .timer-box {
+    background: var(--panel); border: 2px solid var(--accent2);
+    border-radius: 12px; padding: 8px 24px; text-align: center;
+    box-shadow: var(--glow2);
+  }
+  .timer-label { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; color: var(--dim); letter-spacing: 2px; }
+  #timerDisplay {
+    font-family: 'Orbitron', monospace; font-weight: 900; font-size: 2rem;
+    color: var(--accent2);
+  }
+  #timerDisplay.urgent { color: #ff2222; animation: pulse 0.5s infinite alternate; }
+  @keyframes pulse { from { opacity: 1; } to { opacity: 0.4; } }
+
+  .lives-box {
+    background: var(--panel); border-radius: 10px;
+    padding: 8px 16px; border: 1px solid var(--border); text-align: right;
+  }
+  .lives-label { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; color: var(--dim); letter-spacing: 2px; margin-bottom: 4px; }
+  .hearts { font-size: 1.1rem; }
+
+  #canvasWrapper {
+    position: relative;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 40px #00d4ff18;
+  }
+  canvas {
+    display: block;
+    background: #060d1a;
+  }
+
+  /* HUD banner */
+  #hudBanner {
+    position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+    background: #0b1a2eee; border: 1px solid var(--accent1);
+    border-radius: 8px; padding: 8px 20px;
+    font-family: 'Share Tech Mono', monospace; font-size: 0.8rem;
+    color: var(--accent1); white-space: nowrap;
+    opacity: 0; transition: opacity 0.3s; pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Keys hint */
+  .keys-hint {
+    display: flex; gap: 32px; justify-content: center;
+    margin-top: 12px; width: 100%; max-width: 960px;
+  }
+  .keys-hint .key-group {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--dim);
+  }
+  .key-group .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .key-group.p1 .dot { background: var(--p1); }
+  .key-group.p2 .dot { background: var(--p2); }
+  kbd {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 4px; padding: 2px 6px; font-size: 0.7rem; color: var(--text);
+  }
+
+  /* ─── RESULT SCREEN ─── */
+  .result-title {
+    font-family: 'Orbitron', monospace; font-weight: 900;
+    font-size: 2.5rem; text-align: center; margin-bottom: 8px;
+  }
+  .winner-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1rem; letter-spacing: 3px; margin-bottom: 40px;
+    text-align: center;
+  }
+  .result-scores {
+    display: flex; gap: 24px; margin-bottom: 40px; flex-wrap: wrap; justify-content: center;
+  }
+  .result-score-card {
+    background: var(--panel); border-radius: 16px;
+    padding: 32px 48px; text-align: center; min-width: 180px;
+  }
+  .result-score-card.winner { border: 2px solid var(--accent3); box-shadow: 0 0 24px #39ff1430; }
+  .result-score-card .rname {
+    font-family: 'Share Tech Mono', monospace; font-size: 0.75rem;
+    letter-spacing: 3px; margin-bottom: 12px;
+  }
+  .result-score-card.p1-card .rname { color: var(--p1); }
+  .result-score-card.p2-card .rname { color: var(--p2); }
+  .result-score-card .rscore {
+    font-family: 'Orbitron', monospace; font-weight: 900; font-size: 3rem;
+  }
+  .result-score-card.p1-card .rscore { color: var(--p1); }
+  .result-score-card.p2-card .rscore { color: var(--p2); }
+
+  .btn-secondary {
+    font-family: 'Orbitron', monospace; font-weight: 600;
+    font-size: 0.85rem; letter-spacing: 2px;
+    padding: 12px 36px; border-radius: 8px;
+    background: transparent; color: var(--accent1);
+    border: 1px solid var(--accent1); cursor: pointer;
+    transition: all 0.2s; margin: 0 8px;
+  }
+  .btn-secondary:hover { background: #00d4ff15; }
+
+  /* countdown overlay */
+  #countdownOverlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: #06101ecc;
+    z-index: 20;
+    pointer-events: none;
+  }
+  #countdownNum {
+    font-family: 'Orbitron', monospace; font-weight: 900; font-size: 6rem;
+    color: var(--accent1); text-shadow: var(--glow1);
+    animation: countPop 0.8s ease-out;
+  }
+  @keyframes countPop {
+    0% { transform: scale(2); opacity: 0; }
+    50% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(0.8); opacity: 0.8; }
+  }
+
+  /* noble gas flash */
+  #nobleFlash {
+    position: absolute; inset: 0; background: #ffffff;
+    opacity: 0; pointer-events: none; z-index: 15;
+    transition: opacity 0.1s;
+  }
+
+  /* freeze overlay */
+  #freezeOverlay {
+    position: absolute; inset: 0; display: none;
+    align-items: center; justify-content: center;
+    background: #00d4ff14; z-index: 16;
+    font-family: 'Orbitron', monospace; font-size: 2rem;
+    color: var(--accent1); font-weight: 700;
+    pointer-events: none;
+  }
+
+  .legend {
+    display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
+    margin-top: 8px;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--dim);
+  }
+  .legend-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">ZAR<span>VEN</span></div>
+  <div class="subtitle">GAMIFIED PERIODIC TABLE LEARNING PLATFORM</div>
+  <div style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:var(--dim);">LEVEL 2 · MASS MATTERS</div>
+</header>
+
+<!-- ══════════ MENU SCREEN ══════════ -->
+<div class="screen active" id="menuScreen">
+  <div class="menu-title">MASS MATTERS</div>
+  <div class="level-badge">◈ LEVEL 2 — ZARVEN PLATFORM ◈</div>
+
+  <div class="mode-cards">
+    <div class="mode-card" id="cardHvM" onclick="selectMode('HvM')">
+      <div class="icon">🤖</div>
+      <h3>HUMAN vs MACHINE</h3>
+      <p>Challenge the AI robot that hunts the heaviest element on screen</p>
+    </div>
+    <div class="mode-card" id="cardHvH" onclick="selectMode('HvH')">
+      <div class="icon">⚔️</div>
+      <h3>HUMAN vs HUMAN</h3>
+      <p>Player 1 (WASD) vs Player 2 (↑↓←→) — same board, rival snakes</p>
+    </div>
+  </div>
+
+  <div class="range-section">
+    <h4>SELECT ELEMENT RANGE</h4>
+    <div class="range-btns">
+      <button class="range-btn selected" onclick="selectRange(this,'1-10')">Z 1–10</button>
+      <button class="range-btn" onclick="selectRange(this,'11-20')">Z 11–20</button>
+      <button class="range-btn" onclick="selectRange(this,'1-20')">Z 1–20</button>
+    </div>
+  </div>
+
+  <button class="btn-primary" id="startBtn" onclick="startGame()" disabled>
+    ▶ &nbsp; LAUNCH GAME
+  </button>
+</div>
+
+<!-- ══════════ GAME SCREEN ══════════ -->
+<div class="screen" id="gameScreen">
+  <div class="game-header">
+    <div class="scoreboard">
+      <div class="score-box p1">
+        <div class="player-name" id="p1Name">PLAYER 1</div>
+        <div class="score-val" id="score1">0</div>
+      </div>
+      <div class="score-box p2">
+        <div class="player-name" id="p2Name">ROBOT</div>
+        <div class="score-val" id="score2">0</div>
+      </div>
+    </div>
+    <div class="timer-box">
+      <div class="timer-label">TIME LEFT</div>
+      <div id="timerDisplay">90</div>
+    </div>
+    <div class="lives-box">
+      <div class="lives-label">LIVES</div>
+      <div class="hearts" id="livesDisplay">❤️❤️❤️</div>
+    </div>
+  </div>
+
+  <div id="canvasWrapper">
+    <canvas id="gameCanvas"></canvas>
+    <div id="hudBanner"></div>
+    <div id="nobleFlash"></div>
+    <div id="freezeOverlay">❄ FROZEN</div>
+    <div id="countdownOverlay">
+      <div id="countdownNum">3</div>
+    </div>
+  </div>
+
+  <div class="keys-hint">
+    <div class="key-group p1">
+      <div class="dot"></div>
+      <span id="hint1">WASD — Player 1</span>
+    </div>
+    <div class="key-group p2">
+      <div class="dot"></div>
+      <span id="hint2">← ↑ → ↓ — Player 2</span>
+    </div>
+  </div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#00d4ff"></div>Light element (small)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#39ff14"></div>Heavy element (bigger = more growth)</div>
+    <div class="legend-item"><div class="legend-dot" style="border:2px dashed #c0c0c0;background:transparent"></div>⚠ Noble gas — AVOID!</div>
+  </div>
+</div>
+
+<!-- ══════════ RESULT SCREEN ══════════ -->
+<div class="screen" id="resultScreen">
+  <div class="result-title" id="resultTitle">GAME OVER</div>
+  <div class="winner-text" id="winnerText"></div>
+  <div class="result-scores">
+    <div class="result-score-card p1-card" id="p1ResultCard">
+      <div class="rname" id="p1ResultName">PLAYER 1</div>
+      <div class="rscore" id="finalScore1">0</div>
+    </div>
+    <div class="result-score-card p2-card" id="p2ResultCard">
+      <div class="rname" id="p2ResultName">ROBOT</div>
+      <div class="rscore" id="finalScore2">0</div>
+    </div>
+  </div>
+  <div>
+    <button class="btn-secondary" onclick="backToMenu()">← MENU</button>
+    <button class="btn-primary" onclick="startGame()">PLAY AGAIN</button>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   ZARVEN LEVEL 2 — MASS MATTERS
+   Human vs Machine / Human vs Human
+   Author: ZARVEN Platform (Prototype)
+═══════════════════════════════════════════════════════ */
+
+// ── ELEMENT DATA (first 20 + noble gases highlighted) ──
+const ELEMENTS = [
+  {z:1,  sym:'H',  name:'Hydrogen',   mass:1,   radius:53,  noble:false, example:'Rocket fuel, water (H₂O)'},
+  {z:2,  sym:'He', name:'Helium',     mass:4,   radius:31,  noble:true,  example:'Balloons, MRI cooling'},
+  {z:3,  sym:'Li', name:'Lithium',    mass:7,   radius:167, noble:false, example:'Lithium-ion batteries'},
+  {z:4,  sym:'Be', name:'Beryllium',  mass:9,   radius:112, noble:false, example:'Aerospace alloys'},
+  {z:5,  sym:'B',  name:'Boron',      mass:11,  radius:87,  noble:false, example:'Bulletproof vests'},
+  {z:6,  sym:'C',  name:'Carbon',     mass:12,  radius:77,  noble:false, example:'Diamonds, graphite, life itself'},
+  {z:7,  sym:'N',  name:'Nitrogen',   mass:14,  radius:75,  noble:false, example:'78% of air, fertilisers'},
+  {z:8,  sym:'O',  name:'Oxygen',     mass:16,  radius:73,  noble:false, example:'Breathing, combustion'},
+  {z:9,  sym:'F',  name:'Fluorine',   mass:19,  radius:64,  noble:false, example:'Toothpaste, Teflon pans'},
+  {z:10, sym:'Ne', name:'Neon',       mass:20,  radius:38,  noble:true,  example:'Neon signs'},
+  {z:11, sym:'Na', name:'Sodium',     mass:23,  radius:186, noble:false, example:'Table salt (NaCl)'},
+  {z:12, sym:'Mg', name:'Magnesium',  mass:24,  radius:160, noble:false, example:'Lightweight car parts'},
+  {z:13, sym:'Al', name:'Aluminium',  mass:27,  radius:143, noble:false, example:'Cans, aircraft, foil'},
+  {z:14, sym:'Si', name:'Silicon',    mass:28,  radius:117, noble:false, example:'Microchips, solar cells'},
+  {z:15, sym:'P',  name:'Phosphorus', mass:31,  radius:109, noble:false, example:'DNA backbone, matches'},
+  {z:16, sym:'S',  name:'Sulfur',     mass:32,  radius:104, noble:false, example:'Vulcanised rubber, acid rain'},
+  {z:17, sym:'Cl', name:'Chlorine',   mass:35,  radius:99,  noble:false, example:'Water purification, bleach'},
+  {z:18, sym:'Ar', name:'Argon',      mass:40,  radius:71,  noble:true,  example:'Welding gas, light bulbs'},
+  {z:19, sym:'K',  name:'Potassium',  mass:39,  radius:227, noble:false, example:'Nerve signals, bananas'},
+  {z:20, sym:'Ca', name:'Calcium',    mass:40,  radius:197, noble:false, example:'Bones, teeth, chalk'},
+];
+
+const RANGES = {
+  '1-10':  ELEMENTS.filter(e => e.z >= 1  && e.z <= 10),
+  '11-20': ELEMENTS.filter(e => e.z >= 11 && e.z <= 20),
+  '1-20':  ELEMENTS.filter(e => e.z >= 1  && e.z <= 20),
+};
+
+// ── STATE ──
+let selectedMode = null;
+let selectedRange = '1-10';
+let gameMode = null;
+let rangePool = [];
+
+const CELL = 20;
+const COLS = 38, ROWS = 28;
+const W = COLS * CELL, H = ROWS * CELL;
+
+let snake1, snake2, orbs, score1, score2, lives1, lives2;
+let timeLeft, timerInterval, gameLoopInterval;
+let running = false;
+let nobleSpawnTimer;
+
+// Directions
+const DIR = {UP:[0,-1], DOWN:[0,1], LEFT:[-1,0], RIGHT:[1,0]};
+let dir1, dir2, nextDir1, nextDir2;
+
+// Robot state
+let robotTarget = null;
+
+// ── UI HELPERS ──
+function selectMode(m) {
+  selectedMode = m;
+  document.getElementById('cardHvM').classList.toggle('selected', m==='HvM');
+  document.getElementById('cardHvH').classList.toggle('selected', m==='HvH');
+  checkReady();
+}
+function selectRange(btn, r) {
+  selectedRange = r;
+  document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  checkReady();
+}
+function checkReady() {
+  document.getElementById('startBtn').disabled = !selectedMode;
+}
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ── CANVAS SETUP ──
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = W; canvas.height = H;
+
+// ── GAME INITIALISE ──
+function startGame() {
+  gameMode = selectedMode;
+  rangePool = RANGES[selectedRange];
+
+  // Player names
+  document.getElementById('p1Name').textContent = 'PLAYER 1';
+  document.getElementById('p2Name').textContent = gameMode === 'HvM' ? 'ROBOT 🤖' : 'PLAYER 2';
+  document.getElementById('p1ResultName').textContent = 'PLAYER 1';
+  document.getElementById('p2ResultName').textContent = gameMode === 'HvM' ? 'ROBOT 🤖' : 'PLAYER 2';
+
+  // Key hints
+  document.getElementById('hint1').textContent = 'W A S D — Player 1';
+  document.getElementById('hint2').textContent = gameMode === 'HvH' ? '↑ ← ↓ → — Player 2' : 'Auto — Robot AI';
+
+  showScreen('gameScreen');
+  initRound();
+  countdown(3, runGame);
+}
+
+function initRound() {
+  score1 = score2 = 0;
+  lives1 = lives2 = 3;
+  timeLeft = 90;
+  orbs = [];
+
+  snake1 = { body: [{x:5, y:Math.floor(ROWS/2)}], dir: DIR.RIGHT, alive: true, frozen: false };
+  snake2 = { body: [{x:COLS-6, y:Math.floor(ROWS/2)}], dir: DIR.LEFT, alive: true, frozen: false };
+
+  nextDir1 = DIR.RIGHT;
+  nextDir2 = DIR.LEFT;
+
+  spawnOrbs(5);
+  updateUI();
+}
+
+// ── COUNTDOWN ──
+function countdown(n, cb) {
+  const overlay = document.getElementById('countdownOverlay');
+  const num = document.getElementById('countdownNum');
+  overlay.style.display = 'flex';
+  num.textContent = n;
+  if (n <= 0) {
+    overlay.style.display = 'none';
+    cb();
+    return;
+  }
+  setTimeout(() => countdown(n-1, cb), 900);
+}
+
+// ── RUN GAME ──
+function runGame() {
+  running = true;
+  timerInterval = setInterval(tickTimer, 1000);
+  gameLoopInterval = setInterval(gameLoop, 130);
+  nobleSpawnTimer = setInterval(() => spawnNoble(), 20000);
+}
+
+function tickTimer() {
+  timeLeft--;
+  document.getElementById('timerDisplay').textContent = timeLeft;
+  document.getElementById('timerDisplay').classList.toggle('urgent', timeLeft <= 15);
+  if (timeLeft <= 0) endGame('time');
+}
+
+// ── ORB SPAWNING ──
+function spawnOrbs(n) {
+  for (let i = 0; i < n; i++) {
+    let attempts = 0, pos;
+    do {
+      pos = {x: randInt(1, COLS-2), y: randInt(1, ROWS-2)};
+      attempts++;
+    } while (attempts < 50 && orbAt(pos));
+    const elem = rangePool[randInt(0, rangePool.length-1)];
+    orbs.push({ x: pos.x, y: pos.y, elem, noble: false });
+  }
+}
+
+function spawnNoble() {
+  if (!running) return;
+  const nobles = ELEMENTS.filter(e => e.noble && rangePool.some(r => r.z === e.z));
+  if (!nobles.length) return;
+  const elem = nobles[randInt(0, nobles.length-1)];
+  let pos;
+  let attempts = 0;
+  do {
+    pos = {x: randInt(1, COLS-2), y: randInt(1, ROWS-2)};
+    attempts++;
+  } while (attempts < 50 && orbAt(pos));
+  orbs.push({ x: pos.x, y: pos.y, elem, noble: true });
+  setTimeout(() => { orbs = orbs.filter(o => !o.noble || o !== orbs.find(oo => oo.noble)); }, 8000);
+}
+
+function orbAt(pos) {
+  return orbs.some(o => o.x === pos.x && o.y === pos.y);
+}
+function randInt(a, b) { return Math.floor(Math.random() * (b - a)) + a; }
+
+// ── GAME LOOP ──
+function gameLoop() {
+  if (!running) return;
+
+  // Robot AI
+  if (gameMode === 'HvM' && snake2.alive && !snake2.frozen) {
+    robotAI();
+  }
+
+  // Move snakes
+  if (snake1.alive && !snake1.frozen) moveSnake(snake1, nextDir1, 1);
+  if (snake2.alive && !snake2.frozen) moveSnake(snake2, nextDir2, 2);
+
+  // Maintain orbs
+  if (orbs.filter(o => !o.noble).length < 4) spawnOrbs(2);
+
+  draw();
+  updateUI();
+}
+
+function moveSnake(snake, dir, playerNum) {
+  snake.dir = dir;
+  const head = snake.body[0];
+  const nx = head.x + dir[0];
+  const ny = head.y + dir[1];
+
+  // Wall collision
+  if (nx < 0 || nx >= COLS || ny < 0 || ny >= ROWS) {
+    handleDeath(snake, playerNum);
+    return;
+  }
+  // Self collision
+  if (snake.body.some(s => s.x === nx && s.y === ny)) {
+    handleDeath(snake, playerNum);
+    return;
+  }
+  // Other snake collision
+  const other = playerNum === 1 ? snake2 : snake1;
+  if (other.alive && other.body.some(s => s.x === nx && s.y === ny)) {
+    handleDeath(snake, playerNum);
+    return;
+  }
+
+  snake.body.unshift({x: nx, y: ny});
+
+  // Check orb eating
+  const orbIdx = orbs.findIndex(o => o.x === nx && o.y === ny);
+  if (orbIdx !== -1) {
+    const orb = orbs[orbIdx];
+    orbs.splice(orbIdx, 1);
+    eatOrb(snake, orb, playerNum);
+  } else {
+    snake.body.pop();
+  }
+}
+
+function eatOrb(snake, orb, playerNum) {
+  const elem = orb.elem;
+  if (orb.noble) {
+    // Noble gas — freeze snake
+    showFlash(); // small flash
+    freezeSnake(snake, playerNum);
+    showHUD(`⚠ ${elem.name} — Noble gas! FROZEN 2s`, playerNum);
+    return;
+  }
+  // Normal element — grow by floor(mass/10)
+  const grow = Math.max(1, Math.floor(elem.mass / 10));
+  const tail = snake.body[snake.body.length - 1];
+  for (let i = 0; i < grow; i++) snake.body.push({...tail});
+
+  // Score = mass
+  if (playerNum === 1) { score1 += elem.mass; }
+  else { score2 += elem.mass; }
+
+  showHUD(`⚛ ${elem.sym} — ${elem.name} (mass ${elem.mass}) | ${elem.example}`, playerNum);
+}
+
+function freezeSnake(snake, playerNum) {
+  snake.frozen = true;
+  const overlay = document.getElementById('freezeOverlay');
+  overlay.style.display = 'flex';
+  setTimeout(() => {
+    snake.frozen = false;
+    overlay.style.display = 'none';
+  }, 2000);
+}
+
+function handleDeath(snake, playerNum) {
+  if (playerNum === 1) {
+    lives1--;
+    if (lives1 <= 0) { snake.alive = false; }
+    else { respawn(snake, 5, Math.floor(ROWS/2)); }
+  } else {
+    lives2--;
+    if (lives2 <= 0) { snake.alive = false; }
+    else { respawn(snake, COLS-6, Math.floor(ROWS/2)); }
+  }
+  updateUI();
+  if (!snake1.alive && !snake2.alive) endGame('both_dead');
+}
+
+function respawn(snake, x, y) {
+  snake.body = [{x, y}];
+  snake.alive = true;
+  snake.frozen = false;
+}
+
+// ── ROBOT AI ──
+function robotAI() {
+  // Finds heaviest non-noble orb and steers toward it
+  const head = snake2.body[0];
+  const targets = orbs.filter(o => !o.noble);
+  if (!targets.length) return;
+  const best = targets.reduce((a, b) => b.elem.mass > a.elem.mass ? b : a);
+
+  const dx = best.x - head.x;
+  const dy = best.y - head.y;
+
+  const preferred = [];
+  if (Math.abs(dx) > Math.abs(dy)) {
+    preferred.push(dx > 0 ? DIR.RIGHT : DIR.LEFT);
+    preferred.push(dy > 0 ? DIR.DOWN : DIR.UP);
+  } else {
+    preferred.push(dy > 0 ? DIR.DOWN : DIR.UP);
+    preferred.push(dx > 0 ? DIR.RIGHT : DIR.LEFT);
+  }
+  preferred.push(DIR.RIGHT, DIR.LEFT, DIR.UP, DIR.DOWN);
+
+  const current = snake2.dir;
+  for (const d of preferred) {
+    if (d[0] === -current[0] && d[1] === -current[1]) continue; // no 180
+    const nx = head.x + d[0];
+    const ny = head.y + d[1];
+    if (nx < 0 || nx >= COLS || ny < 0 || ny >= ROWS) continue;
+    if (snake2.body.some(s => s.x === nx && s.y === ny)) continue;
+    nextDir2 = d;
+    break;
+  }
+}
+
+// ── HUD ──
+let hudTimeout;
+function showHUD(msg) {
+  const el = document.getElementById('hudBanner');
+  el.textContent = msg;
+  el.style.opacity = '1';
+  clearTimeout(hudTimeout);
+  hudTimeout = setTimeout(() => el.style.opacity = '0', 2500);
+}
+
+function showFlash() {
+  const f = document.getElementById('nobleFlash');
+  f.style.opacity = '0.35';
+  setTimeout(() => f.style.opacity = '0', 300);
+}
+
+// ── UI UPDATE ──
+function updateUI() {
+  document.getElementById('score1').textContent = score1;
+  document.getElementById('score2').textContent = score2;
+  document.getElementById('livesDisplay').textContent =
+    '❤️'.repeat(Math.max(0, lives1));
+}
+
+// ── DRAW ──
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  // Grid dots
+  ctx.fillStyle = '#0c1a2d';
+  for (let x = 0; x < COLS; x++)
+    for (let y = 0; y < ROWS; y++)
+      if ((x + y) % 2 === 0) ctx.fillRect(x*CELL, y*CELL, CELL, CELL);
+
+  // Orbs
+  orbs.forEach(orb => drawOrb(orb));
+
+  // Snakes
+  if (snake1.alive) drawSnake(snake1, '#00d4ff', '#007aaa', snake1.frozen ? '#aaffff' : null);
+  if (snake2.alive) drawSnake(snake2, '#ff6b35', '#aa3500', snake2.frozen ? '#ffaaaa' : null);
+}
+
+function drawOrb(orb) {
+  const px = orb.x * CELL + CELL/2;
+  const py = orb.y * CELL + CELL/2;
+  const elem = orb.elem;
+
+  // Radius scaled by atomic mass (visual only)
+  const r = Math.min(CELL * 0.45, 4 + elem.mass * 0.18);
+
+  if (orb.noble) {
+    // Noble gas: silver dashed circle
+    ctx.save();
+    ctx.setLineDash([3, 3]);
+    ctx.strokeStyle = '#c0c0c0';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI*2); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#80808044';
+    ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI*2); ctx.fill();
+    // Symbol
+    ctx.fillStyle = '#e0e0e0';
+    ctx.font = `bold ${Math.max(7, r*0.7)}px Share Tech Mono, monospace`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('⚠', px, py - r*0.15);
+    ctx.font = `${Math.max(5, r*0.45)}px Share Tech Mono, monospace`;
+    ctx.fillText(elem.sym, px, py + r*0.5);
+    ctx.restore();
+    return;
+  }
+
+  // Normal element: glowing circle
+  // Color by mass: light=cyan, heavy=green
+  const t = Math.min(1, elem.mass / 40);
+  const col = lerpColor('#00d4ff', '#39ff14', t);
+
+  // Glow
+  const grd = ctx.createRadialGradient(px, py, 0, px, py, r*1.5);
+  grd.addColorStop(0, col + '44');
+  grd.addColorStop(1, 'transparent');
+  ctx.fillStyle = grd;
+  ctx.beginPath(); ctx.arc(px, py, r*1.5, 0, Math.PI*2); ctx.fill();
+
+  ctx.fillStyle = col + '22';
+  ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI*2); ctx.fill();
+  ctx.strokeStyle = col;
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI*2); ctx.stroke();
+
+  // Symbol
+  ctx.fillStyle = col;
+  ctx.font = `bold ${Math.max(6, r*0.7)}px Share Tech Mono, monospace`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(elem.sym, px, py - r*0.12);
+
+  // Mass
+  ctx.fillStyle = '#aaaaaa';
+  ctx.font = `${Math.max(5, r*0.4)}px Share Tech Mono, monospace`;
+  ctx.fillText(elem.mass, px, py + r*0.55);
+}
+
+function drawSnake(snake, headColor, bodyColor, frozenColor) {
+  snake.body.forEach((seg, i) => {
+    const px = seg.x * CELL + 1;
+    const py = seg.y * CELL + 1;
+    const size = CELL - 2;
+    ctx.fillStyle = frozenColor || (i === 0 ? headColor : bodyColor);
+    ctx.strokeStyle = headColor + '66';
+    ctx.lineWidth = 1;
+    if (i === 0) {
+      // Head: rounded rect
+      roundRect(ctx, px, py, size, size, 5);
+      ctx.fill(); ctx.stroke();
+      // Eyes
+      ctx.fillStyle = '#000000aa';
+      ctx.beginPath(); ctx.arc(px+size*0.35, py+size*0.3, 2, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(px+size*0.65, py+size*0.3, 2, 0, Math.PI*2); ctx.fill();
+    } else {
+      roundRect(ctx, px+1, py+1, size-2, size-2, 3);
+      ctx.globalAlpha = 0.75 - i*0.01;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+  });
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y); ctx.arcTo(x+w, y, x+w, y+r, r);
+  ctx.lineTo(x+w, y+h-r); ctx.arcTo(x+w, y+h, x+w-r, y+h, r);
+  ctx.lineTo(x+r, y+h); ctx.arcTo(x, y+h, x, y+h-r, r);
+  ctx.lineTo(x, y+r); ctx.arcTo(x, y, x+r, y, r);
+  ctx.closePath();
+}
+
+function lerpColor(a, b, t) {
+  const ah = parseInt(a.slice(1), 16);
+  const bh = parseInt(b.slice(1), 16);
+  const ar = (ah>>16)&0xff, ag = (ah>>8)&0xff, ab = ah&0xff;
+  const br = (bh>>16)&0xff, bg = (bh>>8)&0xff, bb = bh&0xff;
+  const rr = Math.round(ar + (br-ar)*t);
+  const rg = Math.round(ag + (bg-ag)*t);
+  const rb = Math.round(ab + (bb-ab)*t);
+  return '#' + ((rr<<16)|(rg<<8)|rb).toString(16).padStart(6,'0');
+}
+
+// ── END GAME ──
+function endGame(reason) {
+  running = false;
+  clearInterval(timerInterval);
+  clearInterval(gameLoopInterval);
+  clearInterval(nobleSpawnTimer);
+
+  document.getElementById('finalScore1').textContent = score1;
+  document.getElementById('finalScore2').textContent = score2;
+
+  const p2Label = gameMode === 'HvM' ? 'ROBOT 🤖' : 'PLAYER 2';
+  let title = 'TIME\'S UP!';
+  let winner = '';
+
+  if (score1 > score2) {
+    winner = '🏆 PLAYER 1 WINS!';
+    document.getElementById('p1ResultCard').classList.add('winner');
+    document.getElementById('p2ResultCard').classList.remove('winner');
+  } else if (score2 > score1) {
+    winner = `🏆 ${p2Label} WINS!`;
+    document.getElementById('p2ResultCard').classList.add('winner');
+    document.getElementById('p1ResultCard').classList.remove('winner');
+  } else {
+    winner = '🤝 IT\'S A DRAW!';
+    document.getElementById('p1ResultCard').classList.remove('winner');
+    document.getElementById('p2ResultCard').classList.remove('winner');
+  }
+
+  if (reason === 'both_dead') title = 'GAME OVER';
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('winnerText').textContent = winner;
+
+  setTimeout(() => showScreen('resultScreen'), 800);
+}
+
+function backToMenu() {
+  showScreen('menuScreen');
+}
+
+// ── KEYBOARD ──
+document.addEventListener('keydown', e => {
+  if (!running) return;
+  // Player 1: WASD
+  switch(e.key) {
+    case 'w': case 'W': if (snake1.dir !== DIR.DOWN)  nextDir1 = DIR.UP;    break;
+    case 's': case 'S': if (snake1.dir !== DIR.UP)    nextDir1 = DIR.DOWN;  break;
+    case 'a': case 'A': if (snake1.dir !== DIR.RIGHT) nextDir1 = DIR.LEFT;  break;
+    case 'd': case 'D': if (snake1.dir !== DIR.LEFT)  nextDir1 = DIR.RIGHT; break;
+  }
+  // Player 2 (HvH only): Arrow keys
+  if (gameMode === 'HvH') {
+    switch(e.key) {
+      case 'ArrowUp':    if (snake2.dir !== DIR.DOWN)  nextDir2 = DIR.UP;    e.preventDefault(); break;
+      case 'ArrowDown':  if (snake2.dir !== DIR.UP)    nextDir2 = DIR.DOWN;  e.preventDefault(); break;
+      case 'ArrowLeft':  if (snake2.dir !== DIR.RIGHT) nextDir2 = DIR.LEFT;  e.preventDefault(); break;
+      case 'ArrowRight': if (snake2.dir !== DIR.LEFT)  nextDir2 = DIR.RIGHT; e.preventDefault(); break;
+    }
+  }
+});
+</script>
+</body>
+</html>
